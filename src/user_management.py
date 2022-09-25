@@ -1,6 +1,6 @@
 import boto3
 import os
-from src.passwords import generate_random_password
+from passwords import generate_random_password
 
 USER_POOL_ID = os.environ.get('USER_POOL_ID')
 
