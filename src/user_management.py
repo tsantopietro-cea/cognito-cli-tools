@@ -26,6 +26,35 @@ def find_username_by_email(email):
 
     return get_username_from_response(response)
 
+def reset_user_password(username):
+    try:
+        response = client.admin_reset_user_password(
+            UserPoolId=USER_POOL_ID,
+            Username=username
+        )
+    except client.exceptions.UserNotFoundException as e:
+        return {
+            "error": False, 
+            "success": True, 
+            "message": "User was not found", 
+            "data": None
+        }
+
+    except Exception as e:
+        return {
+            "error": True, 
+            "success": False, 
+            "message": str(e), 
+            "data": None
+        }
+
+    return {
+        "error": False, 
+        "success": True, 
+        "message": "Request successful", 
+        "data": response
+    }        
+
 def disable_user(username):
     try:
         response = client.admin_disable_user(
@@ -52,9 +81,9 @@ def disable_user(username):
     return {
         "error": False, 
         "success": True, 
-        "message": "User was disabled as requested", 
+        "message": "Request successful", 
         "data": response
-    }
+    }        
 
 def enable_user(username):
     try:
@@ -82,9 +111,9 @@ def enable_user(username):
     return {
         "error": False, 
         "success": True, 
-        "message": "User was enabled as requested", 
+        "message": "Request successful", 
         "data": response
-    }   
+    }           
 
 def delete_user(username):
     try:
@@ -112,9 +141,9 @@ def delete_user(username):
     return {
         "error": False, 
         "success": True, 
-        "message": "User was deleted as requested", 
+        "message": "Request successful", 
         "data": response
-    }
+    }        
 
 def create_user(email):
     password = generate_random_password(12)
@@ -133,6 +162,7 @@ def create_user(email):
                     'Value': 'true'
                 }
             ],
+            MessageAction='RESEND',
             TemporaryPassword=password,
             DesiredDeliveryMediums=['EMAIL']
         )
@@ -161,10 +191,11 @@ def create_user(email):
             "data": None
         }
     
+
     return {
         "error": False, 
         "success": True, 
-        "message": "Please confirm your signup, \
-                    check Email for validation code", 
+        "message": "Request successful", 
         "data": response
     }
+
